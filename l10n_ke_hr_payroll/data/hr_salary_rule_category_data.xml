@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+
+    <record id="hr_payroll.BASIC" model="hr.salary.rule.category">
+        <field name="code">BASIC</field>
+        <field name="name">Basic</field>
+    </record>
+
+    <record id="hr_payroll.ALW" model="hr.salary.rule.category">
+        <field name="code">ALW</field>
+        <field name="name">Allowance</field>
+    </record>
+
+    <record id="hr_payroll.DED" model="hr.salary.rule.category">
+        <field name="code">DED</field>
+        <field name="name">Deduction</field>
+    </record>
+
+    <record id="hr_payroll.GROSS" model="hr.salary.rule.category">
+        <field name="code">GROSS</field>
+        <field name="name">Gross</field>
+    </record>
+
+    <record id="TALW" model="hr.salary.rule.category">
+        <field name="code">TALW</field>
+        <field name="name">Total Allowance</field>
+    </record>
+
+    <record id="BASICPAY" model="hr.salary.rule.category">
+        <field name="code">BASICPAY</field>
+        <field name="name">Basic Pay</field>
+    </record>
+
+    <record id="GROSSTAX" model="hr.salary.rule.category">
+        <field name="code">GROSSTAX</field>
+        <field name="name">Gross Taxable</field>
+    </record>
+
+    <record id="PAYBENEFIT" model="hr.salary.rule.category">
+        <field name="code">PAYBENEFIT</field>
+        <field name="name">Gross</field>
+    </record>
+
+    <record id="HOUSEMOTORBENEFIT" model="hr.salary.rule.category">
+        <field name="code">HOUSEMOTORBENEFIT</field>
+        <field name="name">Housing and Motor Vehicle</field>
+    </record>
+
+    <record id="TOTALHOUSEMOTORBENEFIT" model="hr.salary.rule.category">
+        <field name="code">TOTALHOUSEMOTORBENEFIT</field>
+        <field name="name">Total Housing and Motor Vehicle</field>
+    </record>
+    
+    
+    <record id="hr_payroll.NET" model="hr.salary.rule.category">
+        <field name="code">NET</field>
+        <field name="name">Net</field>
+    </record>
+
+    <record id="ADDWAGE" model="hr.salary.rule.category">
+            <field name="name">Additional Wage</field>
+            <field name="code">ADDWAGE</field>
+        </record>
+    
+    <record id="SUBDED" model="hr.salary.rule.category">
+        <field name="code">SUBDED</field>
+        <field name="name">Sub Deduction</field>
+    </record>
+
+    <record id="SUBALLDED" model="hr.salary.rule.category">
+        <field name="code">SUBALLDED</field>
+        <field name="name">Allowed Sub-Deductions</field>
+    </record>
+
+    <record id="ALLDED" model="hr.salary.rule.category">
+        <field name="code">ALLDED</field>
+        <field name="name">Allowed Deductions</field>
+    </record>
+
+    <record id="NSSFEMP" model="hr.salary.rule.category">
+        <field name="code">NSSFEMP</field>
+        <field name="name">NSSF Member Contributions Category</field>
+    </record>
+
+    <record id="NSSFEMPLOYER" model="hr.salary.rule.category">
+        <field name="code">NSSFEMPLOYER</field>
+        <field name="name">NSSF Employer Contributions Category</field>
+    </record>
+
+    <record id="NSSFEMPLOYERTOT" model="hr.salary.rule.category">
+        <field name="code">NSSFEMPLOYERTOT</field>
+        <field name="name">NSSF Employer Contributions Total</field>
+    </record>
+
+    <record id="LDED" model="hr.salary.rule.category">
+        <field name="code">LDED</field>
+        <field name="name">Less from Deduction</field>
+    </record>
+
+    <record id="total_tax_pay" model="hr.salary.rule.category">
+        <field name="code">TAXPAY</field>
+        <field name="name">Taxable pay</field>
+    </record>
+
+    <record id="POSTTAXDED" model="hr.salary.rule.category">
+        <field name="code">POSTTAXDED</field>
+        <field name="name">Post Tax Deductions</field>
+    </record>
+
+    <record id="NHIF" model="hr.salary.rule.category">
+        <field name="code">NHIF</field>
+        <field name="name">Post Tax Deductions</field>
+    </record>
+
+    
+
+</odoo>

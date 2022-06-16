@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<!-- Inherit the stock location tree view -->
+	<record id="view_location_tree2_scs" model="ir.ui.view">
+        <field name="name">stock.location.tree.scs</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_tree2"/>
+        <field name="arch" type="xml">
+            <field name="usage" position="after">
+            	<field name="target"/>
+            </field>
+        </field>
+    </record>
+    
+	<!-- Inherit the stock location form view -->
+	<record id="stock_location_view_scs" model="ir.ui.view">
+        <field name="name">stock.location.view.scs</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='additional_info']" position='inside'>
+            	<field name="target"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

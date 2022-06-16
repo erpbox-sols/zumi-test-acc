@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="view_res_partner_form_inh_attribute_code" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.attribute.code</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+        	<xpath expr="//field[@name='vat']" position="after">
+        		<field name="attribute_code" readonly="1" force_save="1"/>
+        	</xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    
+
+    <record id="product_category_services" model="product.category">
+        <field name="parent_id" ref="product.product_category_1"/>
+        <field name="name">Services</field>
+    </record>
+
+    <record id="product_product_pro_service" model="product.product">
+        <field name="name">Professional Services</field>
+        <field name="categ_id" ref="product_category_services"/>
+        <field name="standard_price">0</field>
+        <field name="list_price">0</field>
+        <field name="type">service</field>
+        <field name="uom_id" ref="uom.product_uom_hour"/>
+        <field name="uom_po_id" ref="uom.product_uom_hour"/>
+        <field name="supplier_taxes_id" search="[('type_tax_use', '=', 'purchase'),('tax_group_id', '=', 'Withholding Tax -5%')]"/>
+    </record>
+
+</odoo>

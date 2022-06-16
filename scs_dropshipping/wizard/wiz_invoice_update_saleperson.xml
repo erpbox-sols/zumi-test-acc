@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="wiz_update_saleperson_scs" model="ir.ui.view">
+	     <field name="name">Update Salesperson</field>
+	     <field name="model">saleperson.update</field>
+	     <field name="arch" type="xml">
+	         <form string="Update Salesperson">
+	             <p class="oe_grey">
+	                 Selected invoices salesperson will be updated based on the source document.
+	             </p>
+	            
+	             <footer>
+	                 <button name="inv_update_saleperson" string="Update Salesperson" type="object" class="btn-primary"/>
+	                 <button string="Cancel" class="btn-secondary" special="cancel"/>
+	             </footer>
+	         </form>
+	     </field>
+	 </record>
+	
+	 <record id="action_update_saleperson" model="ir.actions.act_window">
+	     <field name="name">Update Salesperson</field>
+	     <field name="type">ir.actions.act_window</field>
+	     <field name="res_model">saleperson.update</field>
+	     <field name="view_mode">form</field>
+	     <field name="target">new</field>
+	    <field name="binding_model_id" ref="account.model_account_move" />
+	    <field name="binding_view_types">list</field>
+	</record>
+</odoo>

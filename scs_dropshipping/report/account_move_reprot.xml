@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	<!-- Inherit sale order tree view to display x_salespersion -->
+    <record id="account_move_cohort_view" model="ir.ui.view">
+    	<field name="name">account.move.report.cohort</field>
+    	<field name="model">account.move.report</field>
+    	<field name="arch" type="xml">
+        	<cohort string="Cohort records" date_start="month_date" date_stop="end_date" interval="month" mode="churn" measure="unique_customer"/>
+      	</field>
+    </record>
+
+    <!-- cohort tree view-->
+	<record id="account_move_tree_view" model="ir.ui.view">
+      <field name="name">account.move.report.tree</field>
+      <field name="model">account.move.report</field>
+      <field name="arch" type="xml">
+        <tree>
+        	<field name="unique_customer"/>
+        	<field name="month_date"/>
+        </tree>
+      </field>
+    </record>
+    
+    <record id="account_move_tree_view" model="ir.ui.view">
+      <field name="name">account.move.report.tree</field>
+      <field name="model">account.move.report</field>
+      <field name="arch" type="xml">
+        <form>
+        	<field name="unique_customer"/>
+        	<field name="month_date"/>
+        </form>
+      </field>
+    </record>
+    
+    <!-- Pivot view -->
+    <record id="account_move_pivot_view" model="ir.ui.view">
+	    <field name="name">account.move.pivot.view</field>
+	    <field name="model">account.move.report</field>
+	    <field name="arch" type="xml">
+	         <pivot string="Unique Customer">
+	             <field name="month_date" type="row"/>
+	             <field name="unique_customer" type="measure"/>
+	         </pivot>
+	    </field>
+	</record>
+    
+    <!-- Action :Sale Margin By Product Margin -->
+    <record id="action_account_move_cohort" model="ir.actions.act_window">
+        <field name="name">Customer Cohort</field>
+        <field name="res_model">account.move.report</field>
+        <field name="view_mode">pivot,cohort</field>
+        <field name="help">Cohort View</field>
+     </record>
+       
+    <!-- Menu: Sale Margin By Product Margin-->
+   	<menuitem id="menu_customer_cohort"
+		name='Unique Customer'
+		action="action_account_move_cohort"
+		parent="sale.menu_sale_report"
+		sequence="1"/>
+</odoo>

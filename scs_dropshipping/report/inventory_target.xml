@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="inventory_target_tree_view" model="ir.ui.view">
+      <field name="name">inventory.target.tree.view</field>
+      <field name="model">inventory.target</field>
+      <field name="arch" type="xml">
+        <tree>
+        	<field name="location_id"/>
+        	<field name="target"/>
+        	<field name="product_id"/>
+        	<field name="total_delivered_qty"/>
+        	<field name="total_dropship_qty"/>
+        	<field name="actual_sold" sum="Actual Sold"/>
+        	<field name="actual_total_sold" sum="Actual Total Sold"/>
+        	<field name="qty_on_hand"/>
+        </tree>
+      </field>
+    </record>
+   
+   	<record id="inventory_target_pivot_view" model="ir.ui.view">
+        <field name="name">inventory.target.pivot.view</field>
+        <field name="model">inventory.target</field>
+        <field name="arch" type="xml">
+            <pivot string="Inventory Target">
+                <field name="location_id" type="col"/>
+                <field name="target" type="measure"/>
+                <field name="product_id" type="measure"/>
+                <field name="product_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+	
+    <record id="action_inventory_target" model="ir.actions.act_window">
+        <field name="name">Inventory Target</field>
+        <field name="res_model">inventory.target</field>
+        <field name="view_mode">tree,form,pivot</field>
+        <field name="help">Inventory View</field>
+        <field name="context">{'group_by': ['location_id']}</field>
+     </record>
+       
+    <!-- Menu: Sale Margin By Product Margin-->
+   	<menuitem id="menu_inventory_target"
+		name='Inventory Target'
+		action="action_inventory_target"
+		parent="stock.menu_warehouse_report"
+		sequence="200"/>
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_hr_payslip_form_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.form.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <field name="employee_id" position="attributes">
+                <attribute name="domain">[('emp_type','!=','contractor')]</attribute>
+            </field>
+            <xpath expr="//label[@for='date_from']" position="before">
+                <label for="month" string="Month"/>
+                <div>
+                    <field name="month" class="oe_inline"/>
+                    -
+                    <field name="year" class="oe_inline"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_payslip_run_form_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.run.form.inherit</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position='inside'>
+                <button name="action_open_bills" class="oe_stat_button" icon="fa-money" type="object" help="Generated Bills" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value"><field name="invoice_count"/></span>
+                        <span class="o_stat_text">Bills</span>
+                        </div>
+                </button>
+            </xpath>
+            <xpath expr="//label[@for='date_start']" position="before">
+                <label for="month" string="Month"/>
+                <div>
+                    <field name="month" class="oe_inline"/>
+                    -
+                    <field name="year" class="oe_inline"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_move_form_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="ref" position="after">
+                <field name="payslip_batch_id" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    
+
+</odoo>

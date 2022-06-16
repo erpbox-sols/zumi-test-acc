@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_move_report,access_account_move_report,model_account_move_report,base.group_user,1,1,1,0
+access_stock_move_report,access_stock_move_report,model_stock_move_report,base.group_user,1,1,1,0
+access_returning_customer_report,access_returning_customer_report,model_returning_customer_report,base.group_user,1,1,1,0
+access_new_customer_report,access_new_customer_report,model_new_customer_report,base.group_user,1,1,1,0
+access_inventory_target,access_inventory_target,model_inventory_target,base.group_user,1,1,1,1

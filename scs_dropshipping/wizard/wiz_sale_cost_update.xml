@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="sale_cost_update_form_scs" model="ir.ui.view">
+	     <field name="name">Update Sale Cost</field>
+	     <field name="model">sale.cost.update</field>
+	     <field name="arch" type="xml">
+	         <form string="Invoice Sales Order">
+	             <p class="oe_grey">
+	                 Selected sale orders cost will be updated based on the purchase order created for product with dropship route.
+	             </p>
+	            
+	             <footer>
+	                 <button name="update_cost" string="Update Cost" type="object" class="btn-primary"/>
+	                 <button string="Cancel" class="btn-secondary" special="cancel"/>
+	             </footer>
+	         </form>
+	     </field>
+	 </record>
+	
+	 <record id="action_sale_cost_update1" model="ir.actions.act_window">
+	     <field name="name">Update Cost</field>
+	     <field name="type">ir.actions.act_window</field>
+	     <field name="res_model">sale.cost.update</field>
+	     <field name="view_mode">form</field>
+	     <field name="target">new</field>
+	    <field name="binding_model_id" ref="sale.model_sale_order" />
+	    <field name="binding_view_types">list</field>
+	</record>
+</odoo>

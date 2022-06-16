@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="res_partner_scs_contact" model="ir.ui.view">
+		<field name="name">res.partner.scs.contact</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form" />
+		<field name="arch" type="xml">
+		    <div name="button_box" position="inside">
+		        <button class="oe_stat_button" icon="fa-user">
+                        <field string="Zumi Days" name="days_with_zumi" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" icon="fa-user">
+                        <field string="Inactive Days" name="inactive_days" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" icon="fa-shopping-basket">
+                        <field string="Avg.Basket" name="average_basket" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" icon="fa-user">
+                        <field string="Inactive Weeks" name="inactive_weeks" widget="statinfo"/>
+                </button>
+		    </div>
+		    <field name='user_name' position='after'>
+		    	<field name='frequency_month'/>
+		    </field>
+		</field>
+	</record>
+	
+	<!-- Inherit partner tree view to add more fields -->
+	<record id="view_partner_tree_scs_contact" model="ir.ui.view">
+        <field name="name">res.partner.tree.scs.contact</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="display_name" position="before">
+            	<field name="id"/>
+            </field>
+            <field name="phone" position="after">
+            	<field name="market"/>
+            	<field name="create_date" string="Customer Creation Date"/>
+            	<field name="user_name"/>
+            	<field name="sale_order_count"/>
+            	<field name="total_invoiced"/>
+            	<field name="total_due"/>
+            	<field name="frequency_month"/>
+            	<field name="days_with_zumi"/>
+            	<field name="inactive_days"/>
+            	<field name="inactive_weeks"/>
+            	<field name="average_basket"/>
+            </field>
+        </field>
+    </record>
+</odoo>

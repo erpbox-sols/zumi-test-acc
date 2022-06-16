@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<!-- Inherit the sale order search view -->
+	<record id="sale_search_view_scs" model="ir.ui.view">
+        <field name="name">sale.search.view.scs</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='salesperson']" position="replace"></xpath>
+            <xpath expr="//filter[@name='customer']" position="before">
+				<filter string="X Salesperson" name="x_salesperson" domain="[]" context="{'group_by': 'x_salesperson'}"/>            	
+            </xpath>
+        </field>
+    </record>
+	
+	<!-- Inherit sale order tree view to display x_salespersion -->
+	<record id="view_sale_order_tree_scs_contact" model="ir.ui.view">
+        <field name="name">res.sale.order.tree.scs.contact</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+            	<field name="x_salesperson"/>
+            </field>
+            <xpath expr="//tree/field[@name='user_id']" position='attributes'>
+            	<attribute name='invisible'>1</attribute>
+            </xpath>
+        </field>
+    </record>
+	
+	<!-- Pivot: Sale Report By Product Margin -->
+	<record id="view_sale_margin_pivot" model="ir.ui.view">
+	    <field name="name">view.sale.margin.pivot</field>
+	    <field name="model">sale.report</field>
+	    <field name="arch" type="xml">
+	         <pivot string="Sales Analysis" disable_linking="True" default_order="price_subtotal desc">
+	             <field name="date" type="row" interval="month"/>
+	             <field name="product_id" type="row"/>
+	             <field name="order_id" type="measure"/>
+	             <field name="price_subtotal" type="measure"/>
+	             <field name="price_total" type="measure"/>
+	             <field name="purchase_price" type="measure"/>
+	             <field name="margin" type="measure"/>
+	         </pivot>
+	    </field>
+	</record>
+
+	<!-- Graph : Sale Margin Report By Product Margin -->
+	<record id="view_sale_margin_graph" model="ir.ui.view">
+	     <field name="name">view.sale.margin.graph</field>
+	     <field name="model">sale.report</field>
+	     <field name="arch" type="xml">
+	         <graph string="Sales Analysis" type="line">
+	             <field name="date" type="row" interval="month"/>
+	             <field name="product_id" type="row"/>
+	             <field name="margin" type="measure"/>
+	         </graph>
+	     </field>
+	</record>
+    
+    <!-- Action :Sale Margin By Product Margin -->
+    <record id="action_sale_margin_report" model="ir.actions.act_window">
+        <field name="name">Sales Margin</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_ids"
+                  eval="[(5, 0, 0),
+                         (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_margin_pivot')}),
+                         (0, 0, {'view_mode': 'graph', 'view_id': ref('view_sale_margin_graph')})
+                         ]"/>
+        <field name="search_view_id" ref="sale.view_order_product_search"/>
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, margin etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+     </record>
+       
+    <!-- Menu: Sale Margin By Product Margin-->
+   	<menuitem id="menu_sale_margin_reprot"
+           name="Sale Margin"
+           action="action_sale_margin_report"
+           parent="sale.menu_sale_report"
+           sequence="2"/>
+</odoo>

@@ -1,0 +1,10 @@
+id,rem_type,name
+hr_contract_types.hr_contract_type_emp,monthly,Permanent Employment Contract
+hr_contract_types.hr_contract_type_wrkr,monthly,Fixed-Term Employment Contract
+hr_ke.hr_contract_type_sub1,hourly,Hourly Casual Work Contract
+hr_ke.hr_contract_type_sub2,daily,Daily Casual Work Contract
+hr_ke.hr_contract_type_dir,monthly,Director’s Service Agreement
+hr_ke.hr_contract_type_con1,monthly,Monthly Consultancy Agreement
+hr_ke.hr_contract_type_con2,daily,Daily Consultancy Agreement
+hr_ke.hr_contract_type_con3,hourly,Hourly Consultancy Agreement
+hr_contract_types.hr_contract_type_sub,monthly,Monthly Casual Work Contract

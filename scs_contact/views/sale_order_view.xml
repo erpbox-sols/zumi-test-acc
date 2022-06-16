@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit the sale order report to add sales person -->
+    <template id="report_saleorder_document_scs_contact" inherit_id="sale.report_saleorder_document">
+       	<xpath expr="//div[@id='informations']/div[6]" position="replace">
+       		<div t-if="doc.x_salesperson" class="col-auto mw-100 mb-2">
+                <strong>Salesperson:</strong>
+                <p class="m-0" t-field="doc.x_salesperson"/>
+            </div>
+       	</xpath>	
+	</template>
+</odoo>

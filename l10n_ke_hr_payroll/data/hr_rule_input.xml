@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+
+    <record id="hr_rule_input_bonus" model="hr.payslip.input.type">
+        <field name="name">BONUS</field>
+        <field name="code">BONUS</field>
+        <field name="struct_ids"
+                    eval="[(6, 0, [ref('structure_kenya_emp')])]"/>
+    </record>
+
+    <record id="hr_rule_input_sa" model="hr.payslip.input.type">
+        <field name="name">Salary Advance</field>
+        <field name="code">SA</field>
+        <field name="struct_ids"
+                    eval="[(6, 0, [ref('structure_kenya_emp')])]"/>
+    </record>
+
+    <record id="hr_rule_input_sacco" model="hr.payslip.input.type">
+        <field name="name">SACCO</field>
+        <field name="code">SACCO</field>
+        <field name="struct_ids"
+                    eval="[(6, 0, [ref('structure_kenya_emp')])]"/>
+    </record>
+
+</odoo>

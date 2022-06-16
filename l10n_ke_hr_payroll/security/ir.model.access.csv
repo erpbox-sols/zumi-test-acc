@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_contract_allowance,hr.contract.allowance,l10n_ke_hr_payroll.model_hr_contract_allowance,,1,1,1,1
+access_hr_contract_deductions,hr.contract.deductions,l10n_ke_hr_payroll.model_hr_contract_deductions,,1,1,1,1
+access_hr_contract_car_benefits,hr.contract.car.benefits,l10n_ke_hr_payroll.model_hr_contract_car_benefits,,1,1,1,1

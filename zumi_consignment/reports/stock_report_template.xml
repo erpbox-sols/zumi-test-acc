@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <template id="report_delivery_document_inh_consignment" inherit_id="stock.report_delivery_document">
+        <xpath expr="//t[@t-set='partner']" position="before">
+            <t t-if="o.delivery_receipt == 'delivery'">
+                <h2>
+                    <strong>Delivery Consignment Note Certificate</strong>
+                </h2>
+            </t>
+            <t t-if="o.delivery_receipt == 'receipt'">
+                <h2>
+                    <strong>Receipt Consignment Note Certificate</strong>
+                </h2>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

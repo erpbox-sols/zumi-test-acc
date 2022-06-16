@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="group_sale_price_changes" model="res.groups">
+        <field name="name">Allow Modify Sale Price</field>
+    </record>
+    <record id="group_allow_validate_incoming_shipment" model="res.groups">
+        <field name="name">Restrict Validate Incoming Shipment</field>
+    </record>
+    <record id="group_allow_inventory_operations" model="res.groups">
+        <field name="name">Allow Inventory Operations</field>
+    </record>
+</odoo>

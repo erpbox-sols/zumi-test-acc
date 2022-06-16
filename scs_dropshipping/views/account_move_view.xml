@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<!-- Inherit account move tree view to display salespersion -->
+	<record id="view_invoice_tree_scs_contact" model="ir.ui.view">
+        <field name="name">view.invoice.tree.scs.contact</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <field name="invoice_user_id" position="after">
+            	<field name="sales_person_id"/>
+            	<field name="sales_return" invisible="1"/>
+            	<field name="net_sale" invisible="1"/>
+            	<field name="warehouse_id" invisible="1"/>
+            </field>
+            <xpath expr="//tree/field[@name='invoice_user_id']" position='attributes'>
+            	<attribute name='invisible'>1</attribute>
+            </xpath>
+            <field name="amount_total_signed" position="after">
+            	<field name="total_cost" string="Cost" sum="Cost" attrs="{'invisible': [('type', '!=', 'out_invoice')]}"/>
+            	<field name="margin" string="Margin" sum="Margin" attrs="{'invisible': [('type', 'not in', ('out_invoice', 'out_refund'))]}"/>
+            </field>
+        </field>
+    </record>
+    
+    <!-- Inherit account move form view to display salesperson-->
+	<record id="view_move_form_scs_contact" model="ir.ui.view">
+        <field name="name">view.move.form.scs.contact</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="team_id" position="before">
+            	<field name="sales_person_id"/>
+            	<field name="sales_return" invisible="1"/>
+            	<field name="net_sale" invisible="1"/>
+            	<field name="warehouse_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+            	<field name="market" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+            	<field name="delivery_agent_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+            </field>
+            <xpath expr="//field[@name='invoice_user_id']" position='attributes'>
+            	<attribute name='invisible'>1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position='inside'>
+            	<field name='cost_price' invisible="1"/>
+				<field name='inv_margin' invisible="1"/>
+            </xpath>
+            <field name="amount_residual" position="after">
+            	<field name="margin" attrs="{'invisible': [('type', 'not in', ('out_invoice', 'out_refund'))]}"/>
+            </field>
+        </field>
+    </record>
+    
+    <record id="view_move_line_tree_scs_dropship" model="ir.ui.view">
+        <field name="name">view.move.line.tree.scs.dropship</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="full_reconcile_id" position="after">
+                <field name="cost_price" invisible="1"/>
+            </field>
+        </field>
+    </record>
+    
+    <!-- Inherit the account move search view -->
+	<record id="invoice_search_view_scs" model="ir.ui.view">
+        <field name="name">invoice.search.view.scs</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='salesperson']" position="replace"></xpath>
+            <xpath expr="//filter[@name='status']" position="before">
+				<filter string="X Salesperson" name="sales_person_id" domain="[]" context="{'group_by': 'sales_person_id'}"/>            	
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Server Action -->
+    <record id="action_sale_return" model="ir.actions.server">
+         <field name="name">Compute Sale Return</field>
+         <field name="model_id" ref="account.model_account_move"/>
+         <field name="binding_model_id" ref="account.model_account_move"/>
+         <field name="state">code</field>
+         <field name="code">action = records.set_return_amount()</field>
+    </record>
+    
+</odoo>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_outstanding_payment_document">
+    <t t-call="web.external_layout">
+        <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+        <div class="page">
+            <div class="oe_structure"/>
+
+            <h2 class="mt16 text-center">
+                <span>Outstanding Payments # </span>
+                <span t-field="doc.name"/>
+            </h2>
+
+            <div class="row mt32 mb32" id="informations">
+                <div class="col-auto col-3 mw-100 mb-2">
+                    <strong>Registered Payment</strong>
+                    <p class="m-0" t-field="doc.amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                </div>
+            </div>
+
+            <table class="table table-sm o_main_table">
+                <thead style="display: table-row-group">
+                    <tr>
+                        <th name="th_invoice" class="text-center">Invoice</th>
+                        <th name="th_paid_amount" class="text-right">Paid Amount</th>
+                        <th name="th_outstanding_amout" class="text-right">Outstanding Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="outstanding_payment_tbody">
+                    <t t-foreach="doc.reconciled_invoice_ids" t-as="invoice">
+                        <tr class="bg-200 font-weight-bold o_line_section">
+                            <td name="td_invoice" class="text-center"><span t-field="invoice.name"/></td>
+                            <td name="td_paid_amount" class="text-right o_price_total">
+                                <t t-set="paid_amount" t-value="invoice.sudo().get_paid_amount(doc)"/>
+                                <span t-esc="paid_amount" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
+                            </td>
+                            <td name="td_outstanding_amout" class="text-right o_price_total">
+                                <span t-field="invoice.amount_residual" t-options='{"widget": "monetary", "display_currency": invoice.currency_id}'/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+            <div class="oe_structure"/>
+        </div>
+    </t>
+</template>
+
+
+<template id="report_outstanding_payment">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="zumi_africa_payment_report.report_outstanding_payment_document" t-lang="doc.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+
+</odoo>

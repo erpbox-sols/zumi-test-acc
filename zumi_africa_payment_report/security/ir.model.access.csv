@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_trading_name,trading.name,model_trading_name,,1,1,1,1
+access_division_name,division.name,model_division_name,,1,1,1,1
+access_region_name,region.name,model_region_name,,1,1,1,1
+access_region_areas,region.areas,model_region_areas,,1,1,1,1
+access_channel_segment,channel.segment,model_channel_segment,,1,1,1,1

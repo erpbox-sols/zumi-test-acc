@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_move_form_inh_zumi_access" model="ir.ui.view">
+        <field name="name">view.move.form.zumi_access</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="groups_id" eval="[(4, ref('zumi_access.group_zumi_restrict_so_editting'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="edit">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_move_form_inh_zumi_access_restrict_create" model="ir.ui.view">
+        <field name="name">view.move.form.zumi_access_restrict_create</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="groups_id" eval="[(4, ref('zumi_access.group_zumi_restrict_creation_so_po_invoice'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_move_tree_inh_zumi_access_restrict_create" model="ir.ui.view">
+        <field name="name">view.move.tree.zumi_access_restrict_create</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="groups_id" eval="[(4, ref('zumi_access.group_zumi_restrict_creation_so_po_invoice'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="create">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+        
+
+</odoo>

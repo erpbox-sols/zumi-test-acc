@@ -1,0 +1,1169 @@
+<?xml version="1.0" ?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="structure_type_kenya_emp" model="hr.payroll.structure.type">
+            <field name="name">Kenya Employee</field>
+            <field name="default_resource_calendar_id" ref="resource.resource_calendar_std_38h"/>
+            <field name="country_id" ref="base.ke"/>
+        </record>
+
+        <record id="structure_kenya_emp" model="hr.payroll.structure">
+            <field name="name">Employee Pay</field>
+            <field name="type_id" ref="structure_type_kenya_emp"/>
+            <field name="regular_pay" eval="True"/>
+            <field name="country_id" ref="base.ke"/>
+        </record>
+
+       <record id="hr_rule_basic1" model="hr.salary.rule">
+            <field name="code">BASIC</field>
+            <field eval="10" name="sequence"/>
+            <field eval="1" name="appears_on_payslip"/>
+            <field name="condition_python">result = contract.wage and contract.rem_type in ['monthly']</field>
+            <field name="condition_select">python</field>
+            <field name="amount_select">code</field>
+            <field eval="1" name="active"/>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="name">Basic</field>
+            <field name="amount_python_compute">
+# Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days
+# inputs: object containing the computed inputs
+
+# Note: returned value have to be set in the variable 'result'
+
+result = contract.wage
+            </field>
+            <field name="category_id" ref="BASICPAY"/> 
+            <field name="quantity">1.0</field>
+        </record>
+
+        <record id="hr_rule_basic2" model="hr.salary.rule">
+            <field name="code">BASICPH</field>
+            <field eval="11" name="sequence"/>
+            <field eval="1" name="appears_on_payslip"/>
+            <field name="condition_python">result = contract.wage and contract.rem_type in ['hourly']</field>
+            <field name="condition_select">python</field>
+            <field name="amount_select">code</field>
+            <field eval="1" name="active"/>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="name">Basic-PH</field>
+            <field name="amount_python_compute">
+# Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days
+# inputs: object containing the computed inputs
+
+# Note: returned value have to be set in the variable 'result'
+
+result = worked_days.WORK100 and (worked_days.WORK100.number_of_hours * contract.wage)
+            </field>
+            <field name="category_id" ref="BASICPAY"/> 
+            <field name="quantity">1.0</field>
+        </record>
+
+        <record id="hr_rule_basic3" model="hr.salary.rule">
+            <field name="code">BASICPD</field>
+            <field eval="13" name="sequence"/>
+            <field eval="1" name="appears_on_payslip"/>
+            <field name="condition_python">result = contract.wage and contract.rem_type in ['daily']</field>
+            <field name="condition_select">python</field>
+            <field name="amount_select">code</field>
+            <field eval="1" name="active"/>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="name">Basic-PD</field>
+            <field name="amount_python_compute">
+# Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days
+# inputs: object containing the computed inputs
+
+# Note: returned value have to be set in the variable 'result'
+
+result = worked_days.WORK100 and (worked_days.WORK100.number_of_days * contract.wage)
+            </field>
+            <field name="category_id" ref="BASICPAY"/> 
+            <field name="quantity">1.0</field>
+        </record>
+
+        <record id="hr_rule_basic" model="hr.salary.rule">
+            <field name="code">BASICPAY</field>
+            <field eval="14" name="sequence"/>
+            <field eval="1" name="appears_on_payslip"/>
+            <field name="condition_python">result = categories.BASICPAY</field>
+            <field name="condition_select">python</field>
+            <field name="amount_select">code</field>
+            <field eval="1" name="active"/>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="name">Basic Pay</field>
+            <field name="amount_python_compute">
+# Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days
+# inputs: object containing the computed inputs
+
+# Note: returned value have to be set in the variable 'result'
+
+result = categories.BASICPAY
+            </field>
+            <field name="category_id" ref="hr_payroll.BASIC"/> 
+            <field name="quantity">1.0</field>
+        </record>
+
+        <record id="hr_salary_rule_house_allowances" model="hr.salary.rule">
+            <field name="code">HRA</field>
+            <field name="name">House Allowance</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="sequence" eval="15"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'HRA'])</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'HRA'])</field>
+            <field name="quantity">1.0</field>
+        </record>
+
+        <record id="hr_salary_rule_telephone_allowances" model="hr.salary.rule">
+            <field name="code">TA</field>
+            <field name="name">Telephone Allowance</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="sequence" eval="16"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'TA'])</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'TA'])</field>
+            <field name="quantity">1.0</field>
+        </record>
+
+        <record id="hr_salary_rule_bonus" model="hr.salary.rule">
+            <field name="name">Bonus</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">BONUS</field>
+            <field name="sequence" eval="18"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = inputs.BONUS</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = inputs.BONUS.amount</field>
+        </record>
+
+        <record id="hr_salary_rule_commission" model="hr.salary.rule">
+            <field name="name">Commission</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">COMMISSION</field>
+            <field name="sequence" eval="19"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'COMMISSION'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'COMMISSION'])</field>
+        </record>
+
+        <record id="hr_salary_rule_overtime" model="hr.salary.rule">
+            <field name="name">Overtime Allowances</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">OA</field>
+            <field name="sequence" eval="20"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'OA'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'OA'])</field>
+        </record>
+
+        <record id="hr_salary_rule_trans_all" model="hr.salary.rule">
+            <field name="name">Transport Allowances</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">TRANSA</field>
+            <field name="sequence" eval="21"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'TRANSA'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'TRANSA'])</field>
+        </record>
+
+        <record id="hr_salary_rule_leave_pay" model="hr.salary.rule">
+            <field name="name">Leave Pay</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">LP</field>
+            <field name="sequence" eval="22"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'LP'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'LP'])</field>
+        </record>
+
+        <record id="hr_salary_rule_DF" model="hr.salary.rule">
+            <field name="name">Directors Fee</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">DF</field>
+            <field name="sequence" eval="23"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'DF'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'DF'])</field>
+        </record>
+
+        <record id="hr_salary_rule_LSP" model="hr.salary.rule">
+            <field name="name">Lump Sum Pay</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">LSP</field>
+            <field name="sequence" eval="24"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'LSP'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'LSP'])</field>
+        </record>
+
+        <record id="hr_salary_rule_gincome" model="hr.salary.rule">
+            <field name="name">Global Income (Non Full Time Dir.)</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">GINCOME</field>
+            <field name="sequence" eval="25"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'GINCOME'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'GINCOME'])</field>
+        </record>
+
+        <record id="hr_salary_rule_perdiem" model="hr.salary.rule">
+            <field name="name">Per Diem</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">PERDIEM</field>
+            <field name="sequence" eval="26"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'PERDIEM'])</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'PERDIEM'])</field>
+        </record>
+
+        <record id="hr_salary_rule_other_benefits" model="hr.salary.rule">
+            <field name="code">OB</field>
+            <field name="name">Other Benefits</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="sequence" eval="27"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'OB'])</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="amount_python_compute">result = sum([allowance.amount for allowance in contract.allowance_ids if allowance.salary_rule_id.code == 'OB'])</field>
+            <field name="quantity">1.0</field>
+        </record>
+
+        <record id="hr_salary_rule_total_all" model="hr.salary.rule">
+            <field name="code">TOTALALW</field>
+            <field name="name">Total Cash Allowances</field>
+            <field name="category_id" ref="TALW"/>
+            <field name="sequence" eval="28"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = categories.ALW</field>
+            <field name="amount_select">code</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="amount_python_compute">result = categories.ALW</field>
+            <field name="quantity">1.0</field>
+        </record>
+
+        
+        <record id="hr_salary_rule_gross" model="hr.salary.rule">
+            <field name="name">Gross Pay (Basic + Allowances)</field>
+            <field name="category_id" ref="hr_payroll.GROSS"/>
+            <field name="code">GROSS</field>
+            <field name="sequence" eval="29"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.BASIC + categories.ALW</field>
+        </record>
+
+        <record id="hr_salary_rule_total_pay_benefits" model="hr.salary.rule">
+            <field name="name">Total pay and benefits</field>
+            <field name="category_id" ref="PAYBENEFIT"/>
+            <field name="code">TOTPAYBENEFITS</field>
+            <field name="sequence" eval="30"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.BASIC + categories.ALW + categories.ADDWAGE</field>
+        </record>
+
+        <record id="hr_salary_rule_motor_benefits" model="hr.salary.rule">
+            <field name="name">Motor Vehicle</field>
+            <field name="category_id" ref="HOUSEMOTORBENEFIT"/>
+            <field name="code">MOTOR</field>
+            <field name="sequence" eval="31"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = contract.car</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+RATE_OF_BENEFIT = 0.02
+CAR_BENEFIT = 0.0
+COMMISSIONER_RATE = 0.0
+PRESCRIBED_RATE = 0.0
+for car in contract.car_benefits_ids:
+    if car.cost_type in ['owned']:
+        PRESCRIBED_RATE = RATE_OF_BENEFIT * car.cost_own
+    if car.cost_type in ['hired']:
+        PRESCRIBED_RATE = car.cost_hire
+
+### Determine the Commissioner’s fixed monthly rate based on CC rating and Body Type
+    if car.body in ['cruiser']:
+        COMMISSIONER_RATE = 7200.00
+    if car.body in ['pickup'] and car.cc_rate &lt;= 1750:
+        COMMISSIONER_RATE = 3600.00
+    if car.body in ['pickup'] and car.cc_rate &gt; 1750:
+        COMMISSIONER_RATE = 4200.00
+    if car.body in ['saloon'] and car.cc_rate &lt;= 1200:
+        COMMISSIONER_RATE = 3600.00
+    if car.body in ['saloon'] and car.cc_rate &gt; 1200 and car.cc_rate &lt;= 1500:
+        COMMISSIONER_RATE = 4200.00
+    if car.body in ['saloon'] and car.cc_rate &gt; 1500 and car.cc_rate &lt;= 1750:
+        COMMISSIONER_RATE = 5800.00
+    if car.body in ['saloon'] and car.cc_rate &gt; 1750 and car.cc_rate &lt;= 2000:
+        COMMISSIONER_RATE = 7200.00
+    if car.body in ['saloon'] and car.cc_rate &gt; 2000 and car.cc_rate &lt;= 3000:
+        COMMISSIONER_RATE = 8600.00
+    if car.body in ['saloon'] and car.cc_rate &gt; 3000:
+        COMMISSIONER_RATE = 14400.00
+### The benefit should be taken as the higher of the Fixed monthly rate determined by the Commissioner and the prescribed rate of benefits.
+    CAR_BENEFIT += max (COMMISSIONER_RATE, PRESCRIBED_RATE)
+result = CAR_BENEFIT
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_house_benefits" model="hr.salary.rule">
+            <field name="name">Housing</field>
+            <field name="category_id" ref="HOUSEMOTORBENEFIT"/>
+            <field name="code">HOUSEING</field>
+            <field name="sequence" eval="32"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = contract.house</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+### INITIALIZE VARAIBLES###
+BASIC_SALARY = contract.wage
+NORMAL_PERCENTAGE = 0.15
+AGRI_PERCENTAGE = 0.10
+ACTUAL_RENT = contract.rent
+RENT_RECOVERED = contract.rent_recovered
+TOTAL_EARNINGS = 0
+
+if contract.house and contract.house_type in ['own', 'rented']:
+    COMPUTED_TAXABLE_VALUE = (BASIC_SALARY  + categories.CASH_ALW + categories.BENEFITS) * NORMAL_PERCENTAGE
+    result = max(ACTUAL_RENT, COMPUTED_TAXABLE_VALUE) - RENT_RECOVERED
+
+elif contract.house and contract.house_type == 'agri':
+    COMPUTED_TAXABLE_VALUE = (BASIC_SALARY  + TOTAL_EARNINGS) * AGRI_PERCENTAGE
+    result = COMPUTED_TAXABLE_VALUE - RENT_RECOVERED
+else:
+   result = 0.0
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_total_house_car_benefits" model="hr.salary.rule">
+            <field name="name">Total Housing and Motor vehicle</field>
+            <field name="category_id" ref="TOTALHOUSEMOTORBENEFIT"/>
+            <field name="code">TOTALHOUSECAR</field>
+            <field name="sequence" eval="33"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = categories.HOUSEMOTORBENEFIT</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+
+result = categories.HOUSEMOTORBENEFIT ##Special category for Housing and Car benefit rule
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_gross_taxable" model="hr.salary.rule">
+            <field name="name">Gross Taxable Income</field>
+            <field name="category_id" ref="GROSSTAX"/>
+            <field name="code">GROSSTAX</field>
+            <field name="sequence" eval="33"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = True</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+
+## Gross taxable income is the Sum of Gross pay + Housing and Motor vehicle + other Non Cash Benefits if exceeds 3000 KSH
+result = categories.GROSS + categories.HOUSEMOTORBENEFIT  + categories.ADDWAGE
+# TODO
+#+ (categories.C007 > 3000 and categories.C007 or 0.0 )
+            </field>
+        </record>
+        
+        <!-- <record id="hr_salary_rule_pension_relief" model="hr.salary.rule">
+            <field name="name">LESS: Pension cont. relief</field>
+            <field name="category_id" ref="ADDWAGE"/>
+            <field name="code">LPR</field>
+            <field name="sequence" eval="31"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (contract.pension_relief > 0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.pension_relief</field>
+        </record> -->
+
+        <record id="hr_salary_rule_tc" model="hr.salary.rule">
+            <field name="name">Tax charged</field>
+            <field name="category_id" ref="LDED"/>
+            <field name="code">TC</field>
+            <field name="sequence" eval="57"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (categories.TAXPAY > 24000 and employee.emp_type == 'primary')</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# refered to https://apps.wingubox.com/blog/category/updates/new-kra-paye-tax-rates-2021
+taxable_24 = categories.TAXPAY - 24000
+res_amt = 24000/100*10 # 10% for 0 – 24,000
+if taxable_24 > 8333:
+    res_amt += 8333/100*25 # 25% till 8333
+    res_amt += (taxable_24 - 8333)/100*35
+else:
+    res_amt += taxable_24/100*25 
+result = res_amt
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_lesspr" model="hr.salary.rule">
+            <field name="name">LESS: Personal relief</field>
+            <field name="category_id" ref="LDED"/>
+            <field name="code">LESSPR</field>
+            <field name="sequence" eval="58"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (contract.personal_relief > 0 and employee.emp_type == 'primary')</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = contract.personal_relief
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_lessir" model="hr.salary.rule">
+            <field name="name">LESS: Insurance relief</field>
+            <field name="category_id" ref="LDED"/>
+            <field name="code">LESSPRIR</field>
+            <field name="sequence" eval="59"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (employee.resident and categories.GROSS > 0 and employee.NHIF)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Refered https://mywage.org/kenya/salary/taxes-benefits-and-family
+res_amt = categories.NHIF/100*15 # Insurance Relief = 15% (Insurance Premiums + NHIF Contributions) but shall not exceed Kshs. 5,000.00 per month or Kshs
+if res_amt > 5000:
+    res_amt = 5000
+result = res_amt</field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_t1" model="hr.salary.rule">
+            <field name="name">NSSF Tier I</field>
+            <field name="category_id" ref="NSSFEMP"/>
+            <field name="code">NSSF TI</field>
+            <field name="sequence" eval="37"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+nssf = 0.0
+### Calculation of NSSF Tier I Employee Contribution based on Gross Pay###
+if employee.resident:
+    TIER1_RATE = 0.06
+    LEL = 6000
+    PAY = categories.GROSS
+    if PAY &lt;= LEL:
+        nssf = round(TIER1_RATE * PAY)
+    elif PAY &gt; LEL:
+        nssf = round(TIER1_RATE * LEL)
+result = nssf
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_t2" model="hr.salary.rule">
+            <field name="name">NSSF Tier II</field>
+            <field name="category_id" ref="NSSFEMP"/>
+            <field name="code">NSSF TII</field>
+            <field name="sequence" eval="38"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+nssf = 0.0
+### Calculation of NSSF Tier II Employee Contribution based on Gross Pay###
+if employee.resident:
+    TIER2_RATE = 0.06
+    LEL = 6000
+    UEL = 18000
+    PAY = categories.GROSS
+    if PAY &gt; LEL and PAY &lt;= UEL:
+        nssf = round(TIER2_RATE* (PAY - LEL))
+    elif PAY &gt; UEL:
+        nssf = round(TIER2_RATE* (UEL - LEL))
+result = nssf
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_t3" model="hr.salary.rule">
+            <field name="name">NSSF Tier III</field>
+            <field name="category_id" ref="NSSFEMP"/>
+            <field name="code">NSSF TIII</field>
+            <field name="sequence" eval="39"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.nssf_t3 and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+result = employee.emp_amt_nssf_t3
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_VC" model="hr.salary.rule">
+            <field name="name">NSSF Voluntary Contributions</field>
+            <field name="category_id" ref="NSSFEMP"/>
+            <field name="code">NSSF VC</field>
+            <field name="sequence" eval="40"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.nssf_vol and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+result = employee.emp_nssf_vol
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_total" model="hr.salary.rule">
+            <field name="name">Total NSSF Employee</field>
+            <field name="category_id" ref="SUBDED"/>
+            <field name="code">NSSF VC</field>
+            <field name="sequence" eval="41"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and categories.NSSFEMP and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+result = categories.NSSFEMP
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_EMPLOYER_t1" model="hr.salary.rule">
+            <field name="name">NSSF Tier I - Employer</field>
+            <field name="category_id" ref="NSSFEMPLOYER"/>
+            <field name="code">NSSF EMPLOYER TI</field>
+            <field name="sequence" eval="42"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+nssf = 0.0
+### Calculation of NSSF Tier I Employer Contribution based on Gross Pay###
+if employee.resident:
+    TIER1_RATE = 0.06
+    LEL = 6000
+    PAY = categories.GROSS
+    if PAY &lt;= LEL:
+        nssf = round(TIER1_RATE * PAY)
+    elif PAY &gt; LEL:
+        nssf = round(TIER1_RATE * LEL)
+result = nssf
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_EMPLOYER_t2" model="hr.salary.rule">
+            <field name="name">NSSF Tier II - Employer</field>
+            <field name="category_id" ref="NSSFEMPLOYER"/>
+            <field name="code">NSSF EMPLOYER TII</field>
+            <field name="sequence" eval="43"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+nssf = 0.0
+### Calculation of NSSF Tier II Employer Contribution based on Gross Pay###
+if employee.resident:
+    TIER2_RATE = 0.06
+    LEL = 6000
+    UEL = 18000
+    PAY = categories.GROSS
+    if PAY &gt; LEL and PAY &lt;= UEL:
+        nssf = round(TIER2_RATE* (PAY - LEL))
+    elif PAY &gt; UEL:
+        nssf = round(TIER2_RATE* (UEL - LEL))
+result = nssf
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_EMPLOYER_t3" model="hr.salary.rule">
+            <field name="name">NSSF Tier III - Employer</field>
+            <field name="category_id" ref="NSSFEMPLOYER"/>
+            <field name="code">NSSF EMPLOYER TIII</field>
+            <field name="sequence" eval="44"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.nssf_t3 and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+result = employee.employer_amt_nssf_t3
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_NSSF_EMPLOYER_total" model="hr.salary.rule">
+            <field name="name">Total NSSF Contributions -Employer</field>
+            <field name="category_id" ref="NSSFEMPLOYERTOT"/>
+            <field name="code">NSSF EMPLOYER Total</field>
+            <field name="sequence" eval="45"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and categories.NSSFEMPLOYER and employee.NSSF</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute"># Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+
+result = categories.NSSFEMPLOYER
+            </field>
+        </record>
+        
+        <record id="hr_salary_rule_pension_relief" model="hr.salary.rule">
+            <field name="name">Pension/Provident Fund Category</field>
+            <field name="category_id" ref="ALLDED"/>
+            <field name="code">LPR</field>
+            <field name="sequence" eval="46"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = categories.NSSFEMP</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+result = categories.NSSFEMP
+            </field>
+        </record>
+
+
+        <record id="hr_salary_rule_NHIF_slab" model="hr.salary.rule">
+            <field name="name">N.H.I.F.</field>
+            <field name="category_id" ref="NHIF"/>
+            <field name="code">NHIF Contribution</field>
+            <field name="sequence" eval="47"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (employee.resident and categories.GROSS > 0 and employee.NHIF)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+#######
+NHIF = 0.0
+salary = categories.GROSS
+if salary &lt;= 5999:
+    NHIF = 150
+elif salary &gt;= 6000 and salary &lt;= 7999:
+    NHIF = 300
+elif salary &gt;= 8000 and salary &lt;= 11999:
+    NHIF = 400
+elif salary &gt;= 12000 and salary &lt;= 14999:
+    NHIF = 500
+elif salary &gt;= 15000 and salary &lt;= 19999:
+    NHIF = 600
+elif salary &gt;= 20000 and salary &lt;= 24999:
+    NHIF = 750
+elif salary &gt;= 25000 and salary &lt;= 29999:
+    NHIF = 850
+elif salary &gt;= 30000 and salary &lt;= 39999:
+    NHIF = 900
+elif salary &gt;= 40000 and salary &lt;= 44999:
+    NHIF = 1000
+elif salary &gt;= 45000 and salary &lt;= 49999:
+    NHIF = 1100
+elif salary &gt;= 50000 and salary &lt;= 59999:
+    NHIF = 1200
+elif salary &gt;= 60000 and salary &lt;= 69999:
+    NHIF = 1300
+elif salary &gt;= 70000 and salary &lt;= 79999:
+    NHIF = 1400
+elif salary &gt;= 80000 and salary &lt;= 89999:
+    NHIF = 1500
+elif salary &gt;= 90000 and salary &lt;= 99999:
+    NHIF = 1600
+elif salary &gt;= 100000:
+    NHIF = 1700
+
+result = NHIF
+            </field>
+        </record>
+
+        <!-- <record id="hr_salary_rule_WHT" model="hr.salary.rule">
+            <field name="name">WHT</field>
+            <field name="category_id" ref="SUBDED"/>
+            <field name="code">WHT</field>
+            <field name="sequence" eval="48"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (contract.WHT > 0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.WHT</field>
+        </record> -->
+
+        <record id="hr_salary_rule_OTHERDED" model="hr.salary.rule">
+            <field name="name">Other deductions</field>
+            <field name="category_id" ref="SUBDED"/>
+            <field name="code">OTHERDED</field>
+            <field name="sequence" eval="49"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (contract.other_ded > 0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.other_ded</field>
+        </record>
+
+        <record id="hr_salary_rule_helb" model="hr.salary.rule">
+            <field name="name">H.E.L.B.</field>
+            <field name="category_id" ref="POSTTAXDED"/>
+            <field name="code">HELB</field>
+            <field name="sequence" eval="50"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (employee.helb)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = employee.helb_rate</field>
+        </record>
+
+        <record id="hr_salary_rule_sa" model="hr.salary.rule">
+            <field name="name">Salary Advance</field>
+            <field name="category_id" ref="POSTTAXDED"/>
+            <field name="code">SADV</field>
+            <field name="sequence" eval="51"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = inputs.SA</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = inputs.SA.amount</field>
+        </record>
+
+        <record id="hr_salary_rule_sacco" model="hr.salary.rule">
+            <field name="name">SACCO</field>
+            <field name="category_id" ref="POSTTAXDED"/>
+            <field name="code">SACCO</field>
+            <field name="sequence" eval="52"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = inputs.SACCO</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = inputs.SACCO.amount</field>
+        </record>
+
+        <record id="hr_salary_rule_hosp" model="hr.salary.rule">
+            <field name="name">H.O.S.P</field>
+            <field name="category_id" ref="SUBALLDED"/>
+            <field name="code">HOSPDED</field>
+            <field name="sequence" eval="53"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.hosp</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+HOSP_LIMIT = 4000
+ACTUAL_DEPOSIT = 0.0
+if employee.hosp and employee.emp_type == 'primary':
+   ACTUAL_DEPOSIT = employee.hosp_deposit
+###For HOSP, the lesser of the prescribed limit or the actual contribution to HOSP is taken as the allowed deduction####
+result = min(HOSP_LIMIT, ACTUAL_DEPOSIT)
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_mortgage" model="hr.salary.rule">
+            <field name="name">Mortgage Interest</field>
+            <field name="category_id" ref="SUBALLDED"/>
+            <field name="code">MORGAGEDED</field>
+            <field name="sequence" eval="54"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.mortgage</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+MI_LIMIT = 25000 ##Per month
+ACTUAL_INTEREST = 0.0
+if employee.mortgage and employee.emp_type == 'primary':
+    ACTUAL_INTEREST = employee.mortgage_interest
+###For OCI , the lesser of the actual interest paid or the prescribed limit is taken as the allowed deduction####
+result = min(MI_LIMIT, ACTUAL_INTEREST)
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_hosp_mortgage" model="hr.salary.rule">
+            <field name="name">H.O.S.P or Mortgage Interest Deducted</field>
+            <field name="category_id" ref="ALLDED"/>
+            <field name="code">HOSPMORGAGEDED</field>
+            <field name="sequence" eval="55"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.hosp or employee.mortgage</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+HOSP_LIMIT = 4000
+ACTUAL_DEPOSIT = 0.0
+if employee.hosp and employee.emp_type == 'primary':
+   ACTUAL_DEPOSIT = employee.hosp_deposit
+###For HOSP, the lesser of the prescribed limit or the actual contribution to HOSP is taken as the allowed deduction####
+hosp_amt = min(HOSP_LIMIT, ACTUAL_DEPOSIT)
+
+MI_LIMIT = 25000 ##Per month
+ACTUAL_INTEREST = 0.0
+if employee.mortgage and employee.emp_type == 'primary':
+    ACTUAL_INTEREST = employee.mortgage_interest
+###For OCI , the lesser of the actual interest paid or the prescribed limit is taken as the allowed deduction####
+mortgage_amt = min(MI_LIMIT, ACTUAL_INTEREST)
+
+result = max(hosp_amt, mortgage_amt)
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_mortgage" model="hr.salary.rule">
+            <field name="name">PWD Deductions</field>
+            <field name="category_id" ref="ALLDED"/>
+            <field name="code">PWDDED</field>
+            <field name="sequence" eval="55"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = employee.resident and employee.disability</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+EXEMPTION = 150000
+ADDITIONAL_EXEMPTION = 0
+MAX_ADD_EXEMPTION = 50000
+if employee.disability:
+   ADDITIONAL_EXEMPTION = employee.disability_rate
+result = EXEMPTION + min(MAX_ADD_EXEMPTION, ADDITIONAL_EXEMPTION)
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_taxable_pay" model="hr.salary.rule">
+            <field name="name">Taxable pay</field>
+            <field name="category_id" ref="total_tax_pay"/>
+            <field name="code">TAXPAY</field>
+            <field name="sequence" eval="56"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (categories.PAYBENEFIT)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = categories.PAYBENEFIT - categories.ALLDED</field>
+        </record>
+        
+        <record id="hr_salary_rule_paye" model="hr.salary.rule">
+            <field name="name">P.A.Y.E.</field>
+            <field name="category_id" ref="SUBDED"/>
+            <field name="code">PAYE</field>
+            <field name="sequence" eval="60"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (contract.tax_applicable == 'paye')</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+tax_charged = 0
+if categories.TAXPAY > 24000:
+    taxable_24 = categories.TAXPAY - 24000
+    res_amt = 24000/100*10 # 10% for 0 – 24,000
+    if taxable_24 > 8333:
+        res_amt += 8333/100*25 # 25% till 8333
+        res_amt += (taxable_24 - 8333)/100*35
+    else:
+        res_amt += taxable_24/100*25 
+    tax_charged = res_amt
+
+res_amt1 = categories.NHIF/100*15
+if res_amt1 > 5000:
+    res_amt1 = 5000
+insurance_relief = res_amt1
+
+result = tax_charged - contract.personal_relief - insurance_relief</field>
+        </record>
+
+        <record id="hr_salary_rule_wht" model="hr.salary.rule">
+            <field name="name">W.H.T</field>
+            <field name="category_id" ref="SUBDED"/>
+            <field name="code">WHT</field>
+            <field name="sequence" eval="61"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (contract.tax_applicable == 'wht')</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Available variables:
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# rule: object containing the current rule being computed
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+# Note: returned value have to be set in the variable 'result'
+if employee.resident:
+    WHT_RATE = 0.05
+else:
+    WHT_RATE = 0.15
+MIN_LIMIT = 24000
+TAXABLE = categories.TAXPAY ## Taxable Pay
+#round_up = lambda x: int(x + 1) if int(x) != x else int(x)
+if  TAXABLE > MIN_LIMIT:
+    result = WHT_RATE * TAXABLE
+else:
+    result = 0
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_tot_deduction" model="hr.salary.rule">
+            <field name="name">Total deductions</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="code">TOTDED</field>
+            <field name="sequence" eval="99"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (categories.SUBDED > 0 or categories.POSTTAXDED > 0 or categories.NHIF > 0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.SUBDED + categories.POSTTAXDED + categories.NHIF</field>
+        </record>
+
+        <record id="hr_salary_rule_Net" model="hr.salary.rule">
+            <field name="name">Net pay</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="code">NET</field>
+            <field name="sequence" eval="200"/>
+            <field name="condition_select">python</field>
+            <field name="struct_id" ref="structure_kenya_emp"/>
+            <field name="condition_python">result = (categories.PAYBENEFIT - categories.DED > 0)</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.PAYBENEFIT - categories.DED</field>
+        </record>
+
+    </data>
+</odoo>

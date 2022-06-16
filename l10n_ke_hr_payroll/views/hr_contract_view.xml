@@ -1,0 +1,145 @@
+<odoo>
+
+    <record id="hr_contract_type_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.contract.type.form.inherit</field>
+        <field name="model">hr.contract.type</field>
+        <field name="inherit_id" ref="hr_contract_types.hr_contract_type_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group" position="inside">
+                <field name="rem_type" required="1"/>
+                <field name="tax_applicable"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_contract_type_view_tree_inherit" model="ir.ui.view">
+            <field name="name">hr.contract.type.tree.inherit</field>
+            <field name="model">hr.contract.type</field>
+            <field name="inherit_id" ref="hr_contract_types.hr_contract_type_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="inside">
+                <field name="rem_type" />
+            </xpath>
+            </field>
+        </record>
+
+    <!-- Contract: Form View Inherited -->
+     <record id="hr_contract_view_form_inherited" model="ir.ui.view">
+        <field name="name">view.hr.contract.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='employee_id']" position="attributes">
+                 <attribute name="required">True</attribute>
+             </xpath>
+             <field name="job_id" position="after">
+                <field name="rem_type" readonly="1"/>
+             </field>
+             <field name="department_id" position="after">
+                <field name="house"/>
+                <field name="car"/>
+                <field name="tax_applicable" readonly="1"/>
+             </field>
+             <xpath expr="//group[@name='duration_group']" position="after">
+                <group colspan="4">
+                    <group name="allowances" string="Allowances" colspan="2">
+                        <field name="allowance_ids" colspan="2" nolabel="1">
+                            <tree editable="top">
+                                <field name="salary_rule_id" required="1"/>
+                                <field name="amount" required="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <!-- <group  name="deductions" string="Deductions" colspan="2">
+                        <field name="deduction_ids" colspan="2" nolabel="1">
+                            <tree editable="top">
+                                <field name="salary_rule_id" required="1"/>
+                                <field name="amount" required="1"/>
+                            </tree>
+                        </field>
+                    </group> -->
+                </group>
+             </xpath>
+             <xpath expr="//group[@name='main_info']" position="after">
+                <group>
+                    <!-- <field name="pension_relief"/> -->
+                    <!-- <field name="tax_charged"/> -->
+                    <field name="personal_relief" invisible="1"/>
+                    <field name="emp_type" invisible="1"/>
+                    <!-- <field name="insurance_relief"/> -->
+                    <!-- <field name="NSSF"/> -->
+                    <!-- <field name="NHIF"/> -->
+                    <!-- <field name="WHT"/> -->
+                    <field name="bonus" attrs="{'invisible':[('emp_type', '!=', 'contractor')]}"/>
+                    <field name="other_ded" attrs="{'invisible':[('emp_type', '!=', 'contractor')]}"/>
+                </group>
+             </xpath>
+             <xpath expr="//notebook" position="inside">
+                <page string="Housing" attrs="{'invisible':[('house', '=', False)]}">
+                    <group>
+                        <group>
+                            <field name="house_type" attrs="{'required':[('house', '=', True)]}"/>
+                            <field name="rent" attrs="{'invisible':['|',('house_type', '=', 'agric'),('house_type','=','director')]}"/>
+                        </group>
+                        <group>
+                            <field name="rent_recovered" attrs="{'invisible':['|',('house_type', '=', 'agric'),('house_type','=','director')]}"/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Car Benefit" attrs="{'invisible':[('car', '=', False)]}">
+                    <field name="car_benefits_ids">
+                        <tree editable="top">
+                            <field name="name"/>
+                            <field name="make"/>
+                            <field name="body"/>
+                            <field name="cc_rate"/>
+                            <field name="cost_type"/>
+                            <field name="cost_hire" attrs="{'readonly':[('cost_type','=','Owned')], 'required':[('cost_type','=','Owned')]}"/>
+                            <field name="cost_own" attrs="{'readonly':[('cost_type','=','Hired')], 'required':[('cost_type','=','Hired')]}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_employee_form_inherited" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='active_group']" position="after">
+                <group colspan="6" string="Payroll">
+                    <group>
+                        <field name="emp_type"/>
+                        <field name="resident"/>
+                        <field name="disability"/>
+                        <field name="helb"/>
+                        <field name="helb_rate" attrs="{'invisible': [('helb', '=', False)], 'required': [('helb', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="pension" string="Pension/Providend Fund?"/>
+                        <field name="pension_contrib" attrs="{'invisible': [('pension', '=', False)], 'required': [('pension', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="disability_rate" attrs="{'invisible': [('disability', '=', False)], 'required': [('disability', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="disability_cert" attrs="{'invisible': [('disability', '=', False)], 'required': [('disability', '=', True)]}"/>
+                    </group>
+                    <group>
+                        <field name="tax_pin"/>
+                        <field name="NHIF"/>
+                        <field name="NSSF"/>
+                        <field name="hosp"/>
+                        <field name="hosp_deposit" attrs="{'invisible': [('hosp', '=', False)], 'required': [('hosp', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="mortgage"/>
+                        <field name="mortgage_interest" attrs="{'invisible': [('mortgage', '=', False)], 'required': [('mortgage', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="nssf_vol"/>
+                        <field name="emp_nssf_vol" attrs="{'invisible': [('nssf_vol', '=', False)], 'required': [('nssf_vol', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="employer_nssf_vol" attrs="{'invisible': [('nssf_vol', '=', False)], 'required': [('nssf_vol', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="nssf_t3"/>
+                        <field name="emp_amt_nssf_t3" attrs="{'invisible': [('nssf_t3', '=', False)], 'required': [('nssf_t3', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="employer_amt_nssf_t3" attrs="{'invisible': [('nssf_t3', '=', False)], 'required': [('nssf_t3', '=', True)]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
